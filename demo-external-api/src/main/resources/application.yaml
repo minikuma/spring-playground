@@ -1,0 +1,8 @@
+server:
+  port: 8080
+---
+logging:
+  level:
+    org.springframework: INFO
+    org.springframwork.web: INFO
+    org.apache.http.impl: DEBUG
