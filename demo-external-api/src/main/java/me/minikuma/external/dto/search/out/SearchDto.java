@@ -1,10 +1,12 @@
-package me.minikuma.external.dto.search;
+package me.minikuma.external.dto.search.out;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.minikuma.external.dto.search.SearchQueryDto;
+import me.minikuma.external.dto.search.SearchQueryResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -26,6 +28,8 @@ public class SearchDto {
         @JsonProperty("place_name")
         private String placeName;
 
+
+        // SearchQueryDto 로 Converting
         public SearchQueryDto convertSearchQueryDto() {
             return SearchQueryDto.builder()
                     .placeName(this.placeName)
@@ -33,7 +37,8 @@ public class SearchDto {
         }
     }
 
-    public SearchQueryResponse<SearchQueryDto> convertResponse(ResponseEntity<SearchDto> response) {
+    // SearchQueryDto 기준으로 최종 응답 생성
+    public SearchQueryResponse<SearchQueryDto> convertResponse() {
         return SearchQueryResponse.<SearchQueryDto>builder()
                 .places(this.documents.stream().map(Documents::convertSearchQueryDto).collect(Collectors.toList()))
                 .build();

@@ -2,7 +2,7 @@ package me.minikuma.external.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.minikuma.external.dto.search.SearchDto;
+import me.minikuma.external.dto.search.out.SearchDto;
 import me.minikuma.external.dto.search.SearchQueryDto;
 import me.minikuma.external.dto.search.SearchQueryResponse;
 import org.springframework.http.*;
@@ -52,7 +52,7 @@ public class TestService {
                 throw new RuntimeException("Runtime Exception");
             }
             ResponseEntity<SearchDto> response = restTemplate.exchange(requestBuilder.toUriString(), HttpMethod.GET, httpEntity, SearchDto.class);
-            return Objects.requireNonNull(response.getBody()).convertResponse(response);
+            return Objects.requireNonNull(response.getBody()).convertResponse();
         } catch (RuntimeException e) {
             throw new RuntimeException();
         }
