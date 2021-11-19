@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SearchQueryDto {
     private String placeName;
+    private String addressName;
+    private String placeUrl;
 }

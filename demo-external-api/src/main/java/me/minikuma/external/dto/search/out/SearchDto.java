@@ -27,12 +27,17 @@ public class SearchDto {
     public static class Documents {
         @JsonProperty("place_name")
         private String placeName;
-
+        @JsonProperty("address_name")
+        private String addressName;
+        @JsonProperty("place_url")
+        private String placeUrl;
 
         // SearchQueryDto 로 Converting
         public SearchQueryDto convertSearchQueryDto() {
             return SearchQueryDto.builder()
                     .placeName(this.placeName)
+                    .addressName(this.addressName)
+                    .placeUrl(this.placeUrl)
                     .build();
         }
     }
