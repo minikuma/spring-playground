@@ -8,29 +8,32 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 /**
- * LettuceConnection
+ * Lettuce Connector
  */
 
 @Configuration
 @EnableRedisRepositories
 @RequiredArgsConstructor
-public class RedisConnectionConfig {
+public class RedisConnectionConfigV1 {
 
     private final RedisProperties redisProperties;
 
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
+    public LettuceConnectionFactory lettuceConnectionFactory() {
         return new LettuceConnectionFactory(
                 new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort())
         );
     }
 
-    @Bean
+    @Bean(name = "redisTemplate")
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(lettuceConnectionFactory());
+        redisTemplate.setKeySerializer(RedisSerializer.string());
+        redisTemplate.setValueSerializer(RedisSerializer.string());
         return redisTemplate;
     }
 }
