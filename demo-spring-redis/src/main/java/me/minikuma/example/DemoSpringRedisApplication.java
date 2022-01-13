@@ -24,18 +24,18 @@ public class DemoSpringRedisApplication {
 
         @Override
         public void run(ApplicationArguments args) throws Exception {
-            User user = new User();
-            user.setId(1L);
-            user.setAge(100);
-            user.setName("test");
-            user.setAddress("korea");
-            userRepository.save(user);
+            User user = User.builder()
+                    .id("ABCD")
+                    .age(1000)
+                    .address("굿")
+                    .build();
 
-            userRepository.findAll().forEach(u -> {
-                log.info("===================");
-                log.info(u.getId() + " | " + u.getName() + " | " + u.getAge() + " | " + u.getAddress());
-            });
+            userRepository.save(user);
+            log.info("save user = {}", user);
+            userRepository.findById(user.getId());
+            log.info("user count = {}", userRepository.count());
+//            userRepository.delete(user);
+            log.info("user = {}", userRepository.findAll());
         }
     }
-
 }

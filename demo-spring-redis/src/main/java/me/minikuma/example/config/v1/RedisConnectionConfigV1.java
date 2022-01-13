@@ -28,12 +28,12 @@ public class RedisConnectionConfigV1 {
         );
     }
 
-    @Bean(name = "redisTemplate")
+    @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(lettuceConnectionFactory());
-        redisTemplate.setKeySerializer(RedisSerializer.string());
-        redisTemplate.setValueSerializer(RedisSerializer.string());
+        redisTemplate.setEnableTransactionSupport(true);
+        redisTemplate.setDefaultSerializer(RedisSerializer.string());
         return redisTemplate;
     }
 }
