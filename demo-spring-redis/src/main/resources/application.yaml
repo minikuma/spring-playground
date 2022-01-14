@@ -6,3 +6,11 @@ spring:
     host: localhost
     port: 1234
     database: 0
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    url: jdbc:h2:mem:commerceDB
+  jpa:
+    show-sql: true
+    generate-ddl: true

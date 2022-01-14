@@ -1,7 +1,6 @@
 package me.minikuma.example;
 
 import lombok.extern.slf4j.Slf4j;
-import me.minikuma.example.domain.User;
 import me.minikuma.example.respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
