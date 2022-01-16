@@ -1,6 +1,5 @@
 package me.minikuma.example.controller;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.minikuma.example.common.dto.BaseResponse;
 import me.minikuma.example.common.dto.ProductRequestDto;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
