@@ -36,6 +36,7 @@ public class ProductService {
     }
 
     // TODO: 상품 저장 (다건)
+    @Transactional(readOnly = false)
     public void saveProductList(final List<Product> products) {
         productRepository.saveAll(products);
     }
