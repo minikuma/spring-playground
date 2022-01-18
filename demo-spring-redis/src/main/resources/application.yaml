@@ -3,9 +3,8 @@ server:
 
 spring:
   redis:
-    host: localhost
+    host: 127.0.0.1
     port: 6380
-    database: 0
     password: ${YOUR_PASSWORD}
   datasource:
     driver-class-name: org.h2.Driver

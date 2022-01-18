@@ -15,7 +15,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
  */
 
 @Configuration
-@EnableRedisRepositories
+@EnableRedisRepositories(basePackages = "me.minikuma.example.repository.cache")
 @RequiredArgsConstructor
 public class RedisConnectionConfigV1 {
 
@@ -23,9 +23,11 @@ public class RedisConnectionConfigV1 {
 
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory() {
-        return new LettuceConnectionFactory(
-                new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort())
-        );
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        config.setPassword(redisProperties.getPassword());
+        config.setPort(redisProperties.getPort());
+        config.setHostName(redisProperties.getHost());
+        return new LettuceConnectionFactory(config);
     }
 
     @Bean

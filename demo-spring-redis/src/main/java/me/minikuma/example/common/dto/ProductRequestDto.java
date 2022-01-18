@@ -3,9 +3,10 @@ package me.minikuma.example.common.dto;
 import lombok.*;
 
 public class ProductRequestDto {
-    @Getter
+
+    @Builder @Getter
     @AllArgsConstructor
-    @Builder
+    @NoArgsConstructor
     public static class Save {
         private String productName;
         private String productDescription;
@@ -13,9 +14,9 @@ public class ProductRequestDto {
         private int quantity;
     }
 
-    @Getter
+    @Builder @Getter
     @AllArgsConstructor
-    @Builder
+    @NoArgsConstructor
     public static class Update {
         private String productName;
         private String productDescription;

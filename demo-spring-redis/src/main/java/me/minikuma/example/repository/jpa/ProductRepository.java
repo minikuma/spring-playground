@@ -1,4 +1,4 @@
-package me.minikuma.example.repository;
+package me.minikuma.example.repository.jpa;
 
 import me.minikuma.example.common.dto.ProductRequestDto;
 import me.minikuma.example.entity.Product;

@@ -16,6 +16,7 @@ import javax.persistence.*;
 @Table(name = "product")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseTimeEntity {
+    private static final long serialVersionUID = 664865927712847110L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;

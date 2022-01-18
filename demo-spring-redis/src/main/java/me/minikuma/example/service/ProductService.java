@@ -1,17 +1,12 @@
 package me.minikuma.example.service;
 
 import lombok.RequiredArgsConstructor;
-import me.minikuma.example.common.dto.BaseResponse;
-import me.minikuma.example.common.dto.ProductRequestDto;
 import me.minikuma.example.entity.Product;
-import me.minikuma.example.repository.ProductRepository;
-import org.springframework.boot.web.server.Http2;
-import org.springframework.http.HttpStatus;
+import me.minikuma.example.repository.jpa.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
