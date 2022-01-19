@@ -15,8 +15,8 @@ public class ProductCache {
     private Long ProductId;
     private String productName;
     private String productDescription;
-    private int price;
-    private int quantity;
+    private Integer price;
+    private Integer quantity;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 }

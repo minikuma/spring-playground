@@ -17,16 +17,7 @@ public class ProductService {
 
     // TODO: 상품 저장 (단건)
     @Transactional(readOnly = false)
-    public Product saveProduct(final Product requestProduct) {
-
-        // TODO: Save Request -> Product Object 로 변경
-        Product product = Product.builder()
-                .productName(requestProduct.getProductName())
-                .productDescription(requestProduct.getProductDescription())
-                .price(requestProduct.getPrice())
-                .quantity(requestProduct.getQuantity())
-                .build();
-
+    public Product saveProduct(final Product product) {
         return productRepository.save(product);
     }
 
@@ -43,7 +34,7 @@ public class ProductService {
     }
 
     // TODO: 상품 조건 (다건, 멀티 Query 조건, name, price)
-    public List<Product> getProductByConditions(final String name, final int price) {
+    public List<Product> getProductByConditions(final String name, final Integer price) {
         return productRepository.findByProductNameAndPriceGreaterThanEqual(name, price);
     }
 }
