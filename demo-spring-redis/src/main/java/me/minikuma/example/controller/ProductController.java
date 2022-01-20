@@ -1,6 +1,5 @@
 package me.minikuma.example.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.minikuma.example.common.dto.BaseResponse;
 import me.minikuma.example.common.dto.ProductDto;
@@ -31,7 +30,6 @@ public class ProductController {
     private final ProductService productService;
     private final ProductCacheRepository productCacheRepository;
     private final MessageSourceAccessor messageSource;
-    private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
 
     @RequestMapping(method = RequestMethod.OPTIONS)
@@ -49,20 +47,14 @@ public class ProductController {
     public ResponseEntity<?> insertProduct(@RequestBody ProductDto request) {
         Product product = modelMapper.map(request, Product.class);
         Product savedProduct = productService.saveProduct(product);
+        Product findProduct = productService.getProductById(product.getProductId());
 
         URI uri = MvcUriComponentsBuilder.fromController(this.getClass())
                 .path("/{productId}")
                 .buildAndExpand(savedProduct.getProductId())
                 .toUri();
 
-        // TODO: savedProduct -> BaseResponse Object 변환
-        BaseResponse response = BaseResponse.builder()
-                .apiVersion("V1")
-                .statusCode(HttpStatus.CREATED.value())
-                .resultCode("0000")
-                .resultMessage(messageSource.getMessage("complete"))
-                .payload(savedProduct)
-                .build();
+        BaseResponse response = createSuccessBaseResponse(findProduct, HttpStatus.CREATED, "0000", false);
 
         return ResponseEntity.created(uri).body(response);
     }
@@ -86,35 +78,23 @@ public class ProductController {
     // TODO: 상품 조건 (단건, ID 기준)
     @GetMapping("/{productId}")
     public ResponseEntity<?> findProduct(@PathVariable("productId") Long productId) {
-        // TODO: Redis Key 값 확인 이후 없는 경우 Database 접근
+        // Redis Key 값 확인 이후 없는 경우 Database 접근
         Optional<ProductCache> cachedProduct = productCacheRepository.findById(productId);
 
         BaseResponse response;
 
         if (cachedProduct.isPresent()) {
             ProductCache productCache = cachedProduct.get();
-            response = createBaseResponse(productCache);
+            response = createSuccessBaseResponse(productCache, HttpStatus.OK, "0001", true);
         } else {
             Product findProduct = productService.getProductById(productId);
             // Product -> ProductCache 변환
             ProductCache convertCachedProduct = modelMapper.map(findProduct, ProductCache.class);
 
             productCacheRepository.save(convertCachedProduct); // cache save
-            response = createBaseResponse(findProduct);
+            response = createSuccessBaseResponse(findProduct, HttpStatus.OK, "0000", false);
         }
-        // TODO: findProduct -> BaseResponse Object 변환
         return ResponseEntity.ok(response);
-    }
-
-    // TODO: Private Method
-    private BaseResponse createBaseResponse(Object responseData) {
-        return BaseResponse.builder()
-                .apiVersion("V1")
-                .statusCode(HttpStatus.CREATED.value())
-                .resultCode("0000")
-                .resultMessage(messageSource.getMessage("complete"))
-                .payload(responseData)
-                .build();
     }
 
     // TODO: 상품 조건 (다건, 멀티 Query 조건, name, price)
@@ -125,13 +105,19 @@ public class ProductController {
         List<Product> productList = productService.getProductByConditions(productName, price);
 
         // TODO: productList -> BaseResponse Object 변환
-        BaseResponse response = BaseResponse.builder()
-                .apiVersion("V1")
-                .statusCode(HttpStatus.CREATED.value())
-                .resultCode("0000")
-                .resultMessage(messageSource.getMessage("complete"))
-                .payload(productList)
-                .build();
+        BaseResponse response = createSuccessBaseResponse(productList, HttpStatus.OK, "0000", false);
         return ResponseEntity.ok(response);
+    }
+
+    // TODO: Private Method, Result Code ENUM 으로 변경, 파라미터 갯수가 너무 많음
+    private <T> BaseResponse createSuccessBaseResponse (T data, HttpStatus httpStatus, String resultCode, Boolean isCached) {
+        return BaseResponse.builder()
+                .apiVersion("v1")
+                .statusCode(httpStatus)
+                .resultCode(resultCode)
+                .resultMessage(messageSource.getMessage("complete"))
+                .payload(data)
+                .isCached(isCached)
+                .build();
     }
 }

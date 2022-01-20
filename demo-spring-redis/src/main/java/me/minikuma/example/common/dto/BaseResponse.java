@@ -1,6 +1,7 @@
 package me.minikuma.example.common.dto;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 @Builder
 @Getter @Setter
@@ -8,8 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 public class BaseResponse {
     private String apiVersion;
-    private int statusCode;
+    private HttpStatus statusCode;
     private Object payload;
     private String resultCode;
     private String resultMessage;
+    private Boolean isCached;
 }
