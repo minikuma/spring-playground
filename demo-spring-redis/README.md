@@ -18,8 +18,64 @@ Spring 에서 지원하고 있는 여러 Redis Connection 방법과 그에 따�
 ```docker pull redis```   
 ```docker run --name redis -p 6380:6379 redis --requirepass your password```
 * Redis Cli 접근   
-```docker run -it --link some-redis:redis --rm redis redis-cli -h redis -p 6379```    
+```docker run -it [container] redis-cli -p 6379```    
 * Reference: https://hub.docker.com/_/redis
+* **Docker Compose Cluster (Master/Slaves) 설치**      
+  * ```docker-compose.yml``` 파일 생성 
+```yaml
+version: '2'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  redis:
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - app-tier
+    ports:
+      - 6379:6379
+  redis-slave-1:
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 6479:6379
+    depends_on:
+      - redis
+    networks:
+      - app-tier
+  redis-slave-2:
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 6579:6379
+    depends_on:
+      - redis
+    networks:
+      - app-tier
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=redis:redis,redis-slave-1:redis-slave-1,redis-slave-2:redis-slave-2
+    ports:
+      - "8081:8081"
+```      
+
+* ```docker-compose up -d```  
+* Reference: https://sup2is.github.io/2020/07/22/redis-replication-with-sentinel.html
 
 ---
 
