@@ -4,8 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-import java.time.LocalDateTime;
-
 @RedisHash("productId")
 @Getter @Setter @Builder
 @NoArgsConstructor
@@ -17,6 +15,4 @@ public class ProductCache {
     private String productDescription;
     private Integer price;
     private Integer quantity;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
 }

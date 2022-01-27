@@ -8,16 +8,16 @@ import me.minikuma.example.entity.ProductCache;
 import me.minikuma.example.repository.cache.ProductCacheRepository;
 import me.minikuma.example.service.ProductService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
@@ -43,25 +43,25 @@ public class ProductController {
     }
 
     // TODO: 상품 저장 (단건) Controller
-    @PostMapping("/save")
-    public ResponseEntity<?> insertProduct(@RequestBody ProductDto request) {
+    @PostMapping(value = "/save")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BaseResponse insertProduct(@RequestBody ProductDto request) {
+
         Product product = modelMapper.map(request, Product.class);
+
         Product savedProduct = productService.saveProduct(product);
         Product findProduct = productService.getProductById(product.getProductId());
 
-        URI uri = MvcUriComponentsBuilder.fromController(this.getClass())
-                .path("/{productId}")
-                .buildAndExpand(savedProduct.getProductId())
-                .toUri();
+        ProductDto productDto = modelMapper.map(findProduct, ProductDto.class);
 
-        BaseResponse response = createSuccessBaseResponse(findProduct, HttpStatus.CREATED, "0000", false);
-
-        return ResponseEntity.created(uri).body(response);
+        BaseResponse response = createSuccessBaseResponse(productDto, HttpStatus.CREATED, "0000", false);
+        return response;
     }
 
     // TODO: 상품 저장 (다건)
     @PostMapping("/list")
-    public ResponseEntity<?> saveProductList(@RequestBody List<ProductDto> request) throws IOException {
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, String> saveProductList(@RequestBody List<ProductDto> request) throws IOException {
         // List<ProductDto> -> List<Product> 변환
         List<Product> products = request.stream()
                 .map(r -> modelMapper.map(r, Product.class))
@@ -72,12 +72,13 @@ public class ProductController {
         WeakHashMap<String, String> result = new WeakHashMap<>();
         result.put("resultMessage", messageSource.getMessage("complete"));
 
-        return ResponseEntity.ok(result);
+        return result;
     }
 
     // TODO: 상품 조건 (단건, ID 기준)
     @GetMapping("/{productId}")
-    public ResponseEntity<?> findProduct(@PathVariable("productId") Long productId) {
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse findProduct(@PathVariable("productId") Long productId) {
         // Redis Key 값 확인 이후 없는 경우 Database 접근
         Optional<ProductCache> cachedProduct = productCacheRepository.findById(productId);
 
@@ -88,25 +89,32 @@ public class ProductController {
             response = createSuccessBaseResponse(productCache, HttpStatus.OK, "0001", true);
         } else {
             Product findProduct = productService.getProductById(productId);
+
             // Product -> ProductCache 변환
             ProductCache convertCachedProduct = modelMapper.map(findProduct, ProductCache.class);
+            ProductDto productDto = modelMapper.map(findProduct, ProductDto.class);
 
             productCacheRepository.save(convertCachedProduct); // cache save
-            response = createSuccessBaseResponse(findProduct, HttpStatus.OK, "0000", false);
+            response = createSuccessBaseResponse(productDto, HttpStatus.OK, "0000", false);
         }
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     // TODO: 상품 조건 (다건, 멀티 Query 조건, name, price)
     @GetMapping
-    public ResponseEntity<?> findProductList(
+    @ResponseStatus(HttpStatus.OK)
+    @Cacheable(value = "multiple-product", key = "#productName + #price", cacheManager = "cacheManager")
+    public BaseResponse findProductList(
             @RequestParam("productName") String productName,
             @RequestParam("price") int price) {
         List<Product> productList = productService.getProductByConditions(productName, price);
 
-        // TODO: productList -> BaseResponse Object 변환
-        BaseResponse response = createSuccessBaseResponse(productList, HttpStatus.OK, "0000", false);
-        return ResponseEntity.ok(response);
+        List<ProductDto> productDtos = productList.stream()
+                .map(p -> modelMapper.map(p, ProductDto.class))
+                .collect(Collectors.toList());
+
+        BaseResponse response = createSuccessBaseResponse(productDtos, HttpStatus.OK, "0000", false);
+        return response;
     }
 
     // TODO: Private Method, Result Code ENUM 으로 변경, 파라미터 갯수가 너무 많음

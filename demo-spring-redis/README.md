@@ -63,15 +63,6 @@ services:
       - redis
     networks:
       - app-tier
-  redis-commander:
-    container_name: redis-commander
-    hostname: redis-commander
-    image: rediscommander/redis-commander:latest
-    restart: always
-    environment:
-      - REDIS_HOSTS=redis:redis,redis-slave-1:redis-slave-1,redis-slave-2:redis-slave-2
-    ports:
-      - "8081:8081"
 ```      
 
 * ```docker-compose up -d```  
