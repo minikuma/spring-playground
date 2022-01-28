@@ -50,10 +50,9 @@ public class ProductController {
         Product product = modelMapper.map(request, Product.class);
 
         Product savedProduct = productService.saveProduct(product);
-        Product findProduct = productService.getProductById(product.getProductId());
+        Product findProduct = productService.getProductById(savedProduct.getProductId());
 
         ProductDto productDto = modelMapper.map(findProduct, ProductDto.class);
-
         BaseResponse response = createSuccessBaseResponse(productDto, HttpStatus.CREATED, "0000", false);
         return response;
     }
