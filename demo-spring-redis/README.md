@@ -4,16 +4,15 @@
 
 Spring 에서 지원하고 있는 여러 Redis Connection 방법과 그에 따른 설정과 테스트를 한 샘플 소스 입니다. Cache 로 Redis 를 활용할 수 있는 예제가 포함되어 있습니다.    
 
+### Connecting to Redis
 * LettuceConnection
-  * Stand Alone (```In-Process```)
-  * Master-Replica (```Not-Ready```)
+  * Stand Alone (```Completed```)
+  * Master-Replica (```Completed```)
 * JedisConnection
-  * Sentinel
-* RedisTemplate 을 통한 Object 작업  
-* Redis Repositories 을 통한 Object 작업 (```In-Process```)
+  * Sentinel (```Not Ready```)
 
 ---
-### Installation   
+### Resource Installation   
 * Docker 를 통한 Redis 설치   
 ```docker pull redis```   
 ```docker run --name redis -p 6380:6379 redis --requirepass your password```
@@ -73,7 +72,12 @@ services:
 ### Using Redis   
 
 * Redis Repositories    
+  * ```RedisHash```   
 * RedisTemplate
+  * ```ValueOperations``` : Redis String or Value Operations
+  * ```Serialize```
+    * Byte 로 사용 시, ```enableDefaultSerializer``` 속성 정의
+* ```Cacheable``` + ```CacheManager```
 
 ---    
 ### Implementations   
