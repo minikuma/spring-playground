@@ -43,7 +43,7 @@ services:
     environment:
       - REDIS_REPLICATION_MODE=slave
       - REDIS_MASTER_HOST=redis
-      - ALLOW_EMPTY_PASSWORD=yes
+      - ALLOW_EMPTY_PASSWOR=yes
     ports:
       - 6479:6379
     depends_on:

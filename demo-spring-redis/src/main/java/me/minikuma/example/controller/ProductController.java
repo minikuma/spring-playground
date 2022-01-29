@@ -1,6 +1,7 @@
 package me.minikuma.example.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.minikuma.example.common.dto.BaseResponse;
 import me.minikuma.example.common.dto.ProductDto;
 import me.minikuma.example.entity.Product;
@@ -8,20 +9,23 @@ import me.minikuma.example.entity.ProductCache;
 import me.minikuma.example.repository.cache.ProductCacheRepository;
 import me.minikuma.example.service.ProductService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.WeakHashMap;
+import java.net.URI;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/product")
@@ -31,6 +35,7 @@ public class ProductController {
     private final ProductCacheRepository productCacheRepository;
     private final MessageSourceAccessor messageSource;
     private final ModelMapper modelMapper;
+    private final CacheManager cacheManager;
 
     @RequestMapping(method = RequestMethod.OPTIONS)
     public ResponseEntity<?> options() {
@@ -45,7 +50,7 @@ public class ProductController {
     // TODO: 상품 저장 (단건) Controller
     @PostMapping(value = "/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public BaseResponse insertProduct(@RequestBody ProductDto request) {
+    public BaseResponse insertProduct(@RequestBody ProductDto request, HttpServletResponse res) {
 
         Product product = modelMapper.map(request, Product.class);
 
@@ -54,12 +59,19 @@ public class ProductController {
 
         ProductDto productDto = modelMapper.map(findProduct, ProductDto.class);
         BaseResponse response = createSuccessBaseResponse(productDto, HttpStatus.CREATED, "0000", false);
+
+        URI uri = MvcUriComponentsBuilder.fromController(this.getClass())
+                .path("/{productId}")
+                .buildAndExpand(findProduct.getProductId())
+                .toUri();
+
+        res.setHeader("Content-Location", uri.toString());
         return response;
     }
 
     // TODO: 상품 저장 (다건)
     @PostMapping("/list")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public Map<String, String> saveProductList(@RequestBody List<ProductDto> request) throws IOException {
         // List<ProductDto> -> List<Product> 변환
         List<Product> products = request.stream()
@@ -113,6 +125,7 @@ public class ProductController {
                 .collect(Collectors.toList());
 
         BaseResponse response = createSuccessBaseResponse(productDtos, HttpStatus.OK, "0000", false);
+
         return response;
     }
 
