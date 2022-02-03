@@ -10,7 +10,9 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
-import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * Lettuce Connector
@@ -35,21 +37,14 @@ public class RedisConnectionConfigV1 {
         return new LettuceConnectionFactory(staticMasterReplicaConfiguration, clientConfig);
     }
 
-//    @Bean
-//    public LettuceConnectionFactory lettuceConnectionFactory() {
-//        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
-//        config.setPassword(redisProperties.getPassword());
-//        config.setPort(redisProperties.getPort());
-//        config.setHostName(redisProperties.getHost());
-//        return new LettuceConnectionFactory(config);
-//    }
-
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
-        RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<Long, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(lettuceConnectionFactory());
-        redisTemplate.setEnableTransactionSupport(true);
-        redisTemplate.setDefaultSerializer(RedisSerializer.string());
+        redisTemplate.setDefaultSerializer(null);
+//        redisTemplate.setEnableTransactionSupport(false);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
     }
 }

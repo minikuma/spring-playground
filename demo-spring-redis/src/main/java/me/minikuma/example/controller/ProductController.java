@@ -9,8 +9,6 @@ import me.minikuma.example.entity.ProductCache;
 import me.minikuma.example.repository.cache.ProductCacheRepository;
 import me.minikuma.example.service.ProductService;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpMethod;
@@ -22,7 +20,10 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,7 +36,6 @@ public class ProductController {
     private final ProductCacheRepository productCacheRepository;
     private final MessageSourceAccessor messageSource;
     private final ModelMapper modelMapper;
-    private final CacheManager cacheManager;
 
     @RequestMapping(method = RequestMethod.OPTIONS)
     public ResponseEntity<?> options() {
