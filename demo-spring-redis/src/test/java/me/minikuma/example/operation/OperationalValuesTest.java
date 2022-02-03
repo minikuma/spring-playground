@@ -4,6 +4,8 @@ import me.minikuma.example.common.dto.ProductDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,24 +24,26 @@ public class OperationalValuesTest {
     final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    RedisTemplate redisTemplate;
+    RedisTemplate<Object, Object> redisTemplate;
 
     @Test
-    @DisplayName("opsForValue() -> ValueOperations : String 작업")
+    @DisplayName("opsForValue() -> ValueOperations : 문자열 작업")
     void value_operations() {
         // given
         String key = "test-key:1";
         String value = "test-value:1";
+
         // when
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(key, value);
-        LOGGER.info("valueOperations = {}", valueOperations.get(key));
+        ValueOperations<Object, Object> opsForValue = redisTemplate.opsForValue();
+        opsForValue.set(key, value);
+        LOGGER.info("valueOperations = {}", opsForValue.get(key));
+
         // then
-        Assertions.assertThat(value).isEqualTo(valueOperations.get(key));
+        Assertions.assertThat(value).isEqualTo(opsForValue.get(key));
     }
 
     @Test
-    @DisplayName("opsForValue() -> ValueOperations : Object 작업")
+    @DisplayName("opsForValue() -> ValueOperations : 객체 작업")
     void object_operations() {
         // given
         ProductDto productDto = new ProductDto();
@@ -50,26 +54,31 @@ public class OperationalValuesTest {
         productDto.setQuantity(1);
 
         // when
-        ValueOperations opsForValue = redisTemplate.opsForValue();
-        opsForValue.set(productDto.getProductId(), productDto);
-        LOGGER.info("valueOperations = {}", opsForValue.get(productDto.getProductId()));
+        ValueOperations<Object, Object> opsForValue = redisTemplate.opsForValue();
+        opsForValue.set(String.valueOf(productDto.getProductId()), productDto);
+
+        String productKey = String.valueOf(productDto.getProductId());
+
+        LOGGER.info("valueOperations By Object = {}", opsForValue.get(productKey));
+
         // then
-        Assertions.assertThat(productDto).isEqualTo(opsForValue.get(productDto.getProductId()));
+        Assertions.assertThat(productDto).isEqualTo(opsForValue.get(productKey));
     }
 
 
     @Test
-    @DisplayName("opsForHash() -> HashOperations : 해시 작업")
+    @DisplayName("opsForHash() -> HashOperations : 해시 작업 (문자열)")
     void hash_operations() {
         // given
         String key = "test-hash-key:2";
         String value = "test-hash-value:2";
+        String hashKey = "HASH_KEY";
         // when
-        HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
-        hashOperations.put(key, key, value);
+        HashOperations<Object, Object, Object> opsForHash = redisTemplate.opsForHash();
+        opsForHash.put(key, hashKey, value);
 
-        LOGGER.info("valueOperations = {}", hashOperations.get(key, key));
+        LOGGER.info("valueOperations = {}", opsForHash.get(key, hashKey));
         // then
-        Assertions.assertThat(value).isEqualTo(hashOperations.get(key, key));
+        Assertions.assertThat(value).isEqualTo(opsForHash.get(key, hashKey));
     }
 }

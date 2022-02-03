@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter @Setter
 @Configuration
-@ConfigurationProperties(prefix = "spring.redis")
+@ConfigurationProperties(prefix = "redis")
 public class RedisProperties {
     private String host;
     private Integer port;

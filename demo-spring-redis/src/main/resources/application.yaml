@@ -1,15 +1,7 @@
 server:
   port: 8080
+
 spring:
-  redis:
-    master:
-      host: 127.0.0.1
-      port: 6379
-    slaves:
-      - host: 127.0.0.1
-        port: 6479
-      - host: 127.0.0.1
-        port: 6579
   datasource:
     driver-class-name: org.h2.Driver
     username: sa
@@ -22,3 +14,14 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+redis:
+  master:
+    host: 127.0.0.1
+    port: 6379
+    password: redistest
+  slaves:
+    - host: 127.0.0.1
+      port: 6479
+    - host: 127.0.0.1
+      port: 6579
