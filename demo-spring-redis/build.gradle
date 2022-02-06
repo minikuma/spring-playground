@@ -28,6 +28,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     runtimeOnly 'com.h2database:h2'
     implementation 'org.modelmapper:modelmapper:3.0.0'
+    // embedded redis - test
+    testImplementation 'it.ozimov:embedded-redis:0.7.3'
 }
 
 test {
