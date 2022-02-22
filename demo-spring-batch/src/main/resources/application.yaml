@@ -32,4 +32,6 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
   batch:
     jdbc:
-      initialize-schema: never
+      initialize-schema: always
+    job:
+      enabled: false # 자동 실행 Block
