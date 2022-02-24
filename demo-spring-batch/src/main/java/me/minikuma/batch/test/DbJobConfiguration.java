@@ -2,6 +2,7 @@ package me.minikuma.batch.test;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -11,6 +12,8 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -33,6 +36,16 @@ public class DbJobConfiguration {
                 .tasklet(new Tasklet() {
                     @Override
                     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+                        // job parameter access (contribution)
+                        JobParameters jobParameters = contribution.getStepExecution().getJobExecution().getJobParameters();
+                        jobParameters.getString("name");
+                        jobParameters.getLong("seq");
+                        jobParameters.getDouble("height");
+                        jobParameters.getDate("date");
+
+                        // job parameter access (chunkContext) -> map 활용 방식
+                        Map<String, Object> jobParameters1 = chunkContext.getStepContext().getJobParameters();
+
                         // TODO: Do Something
                         System.out.println("=============================");
                         System.out.println(" >> DB Job Execute           ");
@@ -47,16 +60,7 @@ public class DbJobConfiguration {
     @Bean
     public Step dbStep2() {
         return stepBuilderFactory.get("dbStep2")
-                .tasklet(new Tasklet() {
-                    @Override
-                    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-                        // TODO: Do Something
-                        System.out.println("=============================");
-                        System.out.println(" >> dbStep2 was executed     ");
-                        System.out.println("=============================");
-                        return RepeatStatus.FINISHED;
-                    }
-                })
+                .tasklet(new CustomTasklet())
                 .build()
                 ;
     }
