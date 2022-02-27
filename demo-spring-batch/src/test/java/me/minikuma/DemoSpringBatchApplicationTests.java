@@ -1,4 +1,4 @@
-package me.minikuma.batch;
+package me.minikuma;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

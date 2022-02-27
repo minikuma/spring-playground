@@ -1,4 +1,4 @@
-package me.minikuma.batch;
+package me.minikuma;
 
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
