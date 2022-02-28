@@ -32,13 +32,4 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
   batch:
     jdbc:
-      initialize-schema: always
-    job:
-      enabled: false # 자동 실행 Block
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    show-sql: true
-    properties:
-      hibernate.format_sql: true
+      initialize-schema: embedded

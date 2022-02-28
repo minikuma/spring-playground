@@ -1,15 +1,12 @@
 package me.minikuma.batch.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Getter @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class ProductDto {
     private Long id;
     private String name;
     private int price;
