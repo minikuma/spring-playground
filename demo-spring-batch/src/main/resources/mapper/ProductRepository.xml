@@ -20,4 +20,18 @@
         );
     ]]>
     </insert>
+
+    <select id="selectList" resultType="ProductDto">
+        <![CDATA[
+        SELECT
+            id,
+            name,
+            price,
+            type
+        FROM product
+        WHERE type = #{type}
+        ORDER BY id
+        ]]>
+    </select>
+
 </mapper>

@@ -82,7 +82,7 @@ public class FileJobConfiguration {
                 .linesToSkip(1) // 첫번째 줄 스킵
                 .delimited().delimiter(",")
                 .names("id", "name", "price", "type")
-                .build();
+                .build(); // parsing 에러 ? 당황하지만 reader? 90%
     }
 
     @Bean
