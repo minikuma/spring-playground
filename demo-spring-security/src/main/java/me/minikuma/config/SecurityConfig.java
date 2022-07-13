@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -96,6 +97,28 @@ public class SecurityConfig {
                 .tokenValiditySeconds(3600) // Default 14일
                 .alwaysRemember(false) // remember me 기능이 활성화되지 않아도 항상 실행
                 .userDetailsService(userDetailsService)
+        ;
+
+        // 동시 세션 제어
+        http
+                .sessionManagement()
+                    .maximumSessions(1) // -1 (무제한)
+                    .maxSessionsPreventsLogin(false) // false: 기존 세션 만료
+                    .expiredUrl("/expired")
+                .and()
+                    .invalidSessionUrl("/invalid")
+        ;
+
+        // 세션 고정 보호
+        http
+                .sessionManagement()
+                .sessionFixation()
+                .changeSessionId(); // none, migrateSession, newSession
+
+        // 세션 정책
+        http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
         ;
 
         return http.build();
