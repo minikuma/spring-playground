@@ -25,6 +25,12 @@
   * never
   * stateless (JWT 와 같은)
 
-
+(2) 인가 API - 권한 설정
+* 선언적 방식
+  * URL: ```http.antMatcher("/users/**").hasRole("USER")```
+  * Method: ```@PreAuthorize("hasRole('USER')"```
+* 동적 방식 (DB 연동)
+  * URL
+  * Method
 
 ---
