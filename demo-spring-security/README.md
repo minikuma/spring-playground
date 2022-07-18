@@ -33,4 +33,18 @@
   * URL
   * Method
 
+(3) 인가 API - ExceptionTranslationFilter
+  * AuthenticationException
+    * 인증 예외 처리
+      * AuthenticationEntryPoint 호출: 로그인 페이지 이동, 401 오류 전달 등
+    * 인증 예외가 발생하기 전의 요청 정보를 저장
+      * RequestCache
+      * SavedRequest
+  * AccessDeniedException
+    * 인가 예외 처리
+      * AccessDeniedHandler 에서 예외 처리가능
+  * 사용법: ```http.exceptionHandlering()```
+
+(4) Form 인증 (CSRF)
+  * ```http.csrf()```
 ---
