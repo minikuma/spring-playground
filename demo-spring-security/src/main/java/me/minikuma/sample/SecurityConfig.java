@@ -1,4 +1,4 @@
-package me.minikuma.config;
+package me.minikuma.sample;
 
 
 import org.springframework.context.annotation.Bean;
@@ -33,8 +33,6 @@ import java.io.IOException;
 /**
  * 사용자 정의 보안 기능
  */
-@Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
 //    private final UserDetailsService userDetailsService;
@@ -43,7 +41,6 @@ public class SecurityConfig {
 //        this.userDetailsService = userDetailsService;
 //    }
 
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 //        http

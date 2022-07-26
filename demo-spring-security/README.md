@@ -47,4 +47,17 @@
 
 (4) Form 인증 (CSRF)
   * ```http.csrf()```
+
+(5) 위임 필터 및 필터 빈 초기화
+* 서블릿 스펙을 구현하고 있는 서블릿은 스프링에서 정의한 빈을 주입할 수 없음
+* ```DelegatingFilterProxy``` 를 통해 사용 가능
+  * ```FilterChainProxy```
+    * ```springSecurityFilterChain``` 이름으로 생성되는 필터 빈
+    * 스프링 시큐리티가 초기화 될때 생성되는 필터를 관리하고 제어(커스텀 필터도 등록 가능)
+    * 필터 순서대로 탐색
+
+(6) 필터 초기화와 다중 설정 클래스
+* ```WebSecurityConfigurerAdapter```
+* 설정 클래스 별로 RequestMatcher 설정 가능
+* 다중 설정 클래스 사용 가능, 설정 클래스 별로 필터가 생성
 ---

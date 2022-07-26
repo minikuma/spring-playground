@@ -1,4 +1,4 @@
-package me.minikuma.controller;
+package me.minikuma.sample;
 
 
 import org.springframework.web.bind.annotation.GetMapping;
